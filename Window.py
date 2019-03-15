@@ -4,12 +4,13 @@ from PyQt5.QtWidgets import QLabel, QGridLayout
 from PyQt5.QtWidgets import QLineEdit, QPushButton
 from PlotCanvas import PlotCanvas
 from Action import Action
-
+from Action import Project
 
 class App(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.actions = []
+        self.project = Project()
         self.create_window()
 
     def create_window(self):
@@ -62,18 +63,23 @@ class App(QWidget):
         name = self.nameEntry.text()
         duration = self.durationEntry.text()
         pred = self.predEntry.text().split(";")
-
         try:
             self.actions.append(Action(name, duration, pred))
+            self.messageLabel.setText("Dodano czynność: "+name)
         except Exception as error:
             self.messageLabel.setText(error.args[0])
             self.actions = []
-
         for task in self.actions:
             print(task.name + " " + str(task.duration) + " " + str(task.predecessors))
 
     def compute_task(self):
-        return
+        self.project.create_network(self.actions)
+        cp = self.project.get_critical_path()
+        dr = self.project.get_duration()
+        self.timeLabel.setText("Czas trwania " + str(dr) + "h")
+        self.criticalPathLabel.setText(str(cp))
+
+
 
 
 if __name__ == '__main__':
