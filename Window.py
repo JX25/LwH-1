@@ -2,9 +2,11 @@ from __future__ import unicode_literals
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtWidgets import QLabel, QGridLayout
 from PyQt5.QtWidgets import QLineEdit, QPushButton
+from PyQt5.QtGui import QIcon, QPixmap
 from PlotCanvas import PlotCanvas
-from Action import Action
+from Action import Action, create_gantt_chart
 from Action import Project
+from Action import create_graph_image
 
 class App(QWidget):
     def __init__(self, parent=None):
@@ -21,7 +23,14 @@ class App(QWidget):
         self.criticalPathLabel = QLabel("Ścieżka krytyczna: ", self)
         self.timeLabel = QLabel("Czas trwania: ", self)
         self.messageLabel = QLabel("", self)
+        self.ganttLabel = QLabel(self)
+        self.graphLabel = QLabel(self)
 
+        pixmap1 = QPixmap('gantt.jpg')
+        pixmap2 = QPixmap('graph.jpg')
+
+        self.ganttLabel.setPixmap(pixmap1)
+        self.graphLabel.setPixmap(pixmap2)
         # entries
         self.nameEntry = QLineEdit()
         self.durationEntry = QLineEdit()
@@ -34,9 +43,6 @@ class App(QWidget):
         # buttons action
         addButton.clicked.connect(self.add_action)
         computeButton.clicked.connect(self.compute_task)
-
-        #canvas gantt
-        canvas = PlotCanvas(self, width=5, height=6)
 
         # grid
         grid = QGridLayout()
@@ -52,17 +58,21 @@ class App(QWidget):
         grid.addWidget(self.predEntry, 2, 1)
         grid.addWidget(addButton, 0, 2)
         grid.addWidget(computeButton, 1, 2)
-        grid.addWidget(canvas, 0, 3, 5, 6)
+        #grid.addWidget(self.ganttLabel, 0, 3, 5, 6)
+        grid.addWidget(self.graphLabel, 3, 1, 3, 2)
 
         self.setLayout(grid)
-        self.resize(600, 300)
+        self.resize(500, 500)
         self.setWindowTitle("App")
         self.show()
 
     def add_action(self):
         name = self.nameEntry.text()
         duration = self.durationEntry.text()
-        pred = self.predEntry.text().split(";")
+        if self.predEntry.text() == '':
+            pred = []
+        else:
+            pred = self.predEntry.text().split(";")
         try:
             self.actions.append(Action(name, duration, pred))
             self.messageLabel.setText("Dodano czynność: "+name)
@@ -73,11 +83,21 @@ class App(QWidget):
             print(task.name + " " + str(task.duration) + " " + str(task.predecessors))
 
     def compute_task(self):
-        self.project.create_network(self.actions)
-        cp = self.project.get_critical_path()
-        dr = self.project.get_duration()
-        self.timeLabel.setText("Czas trwania " + str(dr) + "h")
-        self.criticalPathLabel.setText(str(cp))
+        if self.actions != []:
+            self.project.create_network(self.actions)
+            cp = self.project.get_critical_path()
+            dr = self.project.get_duration()
+            create_graph_image(self.actions, cp)
+            self.graphLabel.setPixmap(QPixmap('images/graph.png'))
+            create_gantt_chart(self.actions, cp)
+            self.ganttLabel.setPixmap(QPixmap('images/gantt.png'))
+            self.timeLabel.setText("Czas trwania " + str(dr) + "h")
+            string_cp = str(cp[0])
+            for node in cp[1:]:
+                string_cp += " -> " + str(node)
+            self.criticalPathLabel.setText(string_cp)
+        else:
+            self.messageLabel.setText("Brak danych!", color='r')
 
 
 
