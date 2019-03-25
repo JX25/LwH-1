@@ -1,12 +1,17 @@
 from __future__ import unicode_literals
+
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtWidgets import QLabel, QGridLayout
 from PyQt5.QtWidgets import QLineEdit, QPushButton
 from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+
 from PlotCanvas import PlotCanvas
 from Action import Action, create_gantt_chart
 from Action import Project
 from Action import create_graph_image
+
 
 class App(QWidget):
     def __init__(self, parent=None):
@@ -44,6 +49,12 @@ class App(QWidget):
         addButton.clicked.connect(self.add_action)
         computeButton.clicked.connect(self.compute_task)
 
+        # web view
+        self.view = QWebEngineView(self)
+        self.view.setFixedWidth(800)
+        self.view.setFixedHeight(600)
+        url = QtCore.QUrl.fromLocalFile(r"/temp-plot.html")
+        self.view.load(url)
         # grid
         grid = QGridLayout()
 
@@ -60,6 +71,7 @@ class App(QWidget):
         grid.addWidget(computeButton, 1, 2)
         #grid.addWidget(self.ganttLabel, 0, 3, 5, 6)
         grid.addWidget(self.graphLabel, 3, 1, 3, 2)
+        grid.addWidget(self.view, 0, 3, 5, 6)
 
         self.setLayout(grid)
         self.resize(500, 500)
@@ -90,7 +102,9 @@ class App(QWidget):
             create_graph_image(self.actions, cp)
             self.graphLabel.setPixmap(QPixmap('images/graph.png'))
             create_gantt_chart(self.actions, cp)
-            self.ganttLabel.setPixmap(QPixmap('images/gantt.png'))
+            url = QtCore.QUrl.fromLocalFile(r"temp-plot.html")
+            self.view.load(url)
+           # self.ganttLabel.setPixmap(QPixmap('images/gantt.png'))
             self.timeLabel.setText("Czas trwania " + str(dr) + "h")
             string_cp = str(cp[0])
             for node in cp[1:]:
