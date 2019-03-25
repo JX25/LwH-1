@@ -1,5 +1,7 @@
 #custom 
-
+images/
+*.jpg
+*.html
 .idea
 
 # Byte-compiled / optimized / DLL files

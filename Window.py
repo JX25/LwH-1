@@ -97,7 +97,7 @@ class App(QWidget):
                 string_cp += " -> " + str(node)
             self.criticalPathLabel.setText(string_cp)
         else:
-            self.messageLabel.setText("Brak danych!", color='r')
+            self.messageLabel.setText("Brak danych!")
 
 
 

@@ -64,6 +64,7 @@ class Project:
     def get_duration(self):
         return self.p.duration
 
+
 def create_graph_image(actions, critic_path):
     G = nx.Graph()
     str_critic_path = [str(node) for node in critic_path]
