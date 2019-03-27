@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QLabel, QGridLayout
 from PyQt5.QtWidgets import QLineEdit, QPushButton
 from PyQt5.QtGui import QIcon, QPixmap
@@ -28,13 +28,10 @@ class App(QWidget):
         self.criticalPathLabel = QLabel("Ścieżka krytyczna: ", self)
         self.timeLabel = QLabel("Czas trwania: ", self)
         self.messageLabel = QLabel("", self)
-        self.ganttLabel = QLabel(self)
         self.graphLabel = QLabel(self)
 
-        pixmap1 = QPixmap('gantt.jpg')
-        pixmap2 = QPixmap('graph.jpg')
+        pixmap2 = QPixmap('images/graph.png')
 
-        self.ganttLabel.setPixmap(pixmap1)
         self.graphLabel.setPixmap(pixmap2)
         # entries
         self.nameEntry = QLineEdit()
@@ -51,29 +48,54 @@ class App(QWidget):
 
         # web view
         self.view = QWebEngineView(self)
-        self.view.setFixedWidth(800)
-        self.view.setFixedHeight(600)
+        self.view.setMinimumWidth(800)
+        self.view.setMinimumHeight(600)
         url = QtCore.QUrl.fromLocalFile(r"/temp-plot.html")
         self.view.load(url)
         # grid
-        grid = QGridLayout()
 
-        grid.addWidget(nameLabel, 0, 0)
-        grid.addWidget(durationLabel, 1, 0)
-        grid.addWidget(predLabel, 2, 0)
-        grid.addWidget(self.criticalPathLabel, 3, 0)
-        grid.addWidget(self.timeLabel, 4, 0)
-        grid.addWidget(self.messageLabel, 5, 0)
-        grid.addWidget(self.nameEntry, 0, 1)
-        grid.addWidget(self.durationEntry, 1, 1)
-        grid.addWidget(self.predEntry, 2, 1)
-        grid.addWidget(addButton, 0, 2)
-        grid.addWidget(computeButton, 1, 2)
-        #grid.addWidget(self.ganttLabel, 0, 3, 5, 6)
-        grid.addWidget(self.graphLabel, 3, 1, 3, 2)
-        grid.addWidget(self.view, 0, 3, 5, 6)
+        hboxRow1 =QHBoxLayout()
+        hboxRow1.addWidget(nameLabel)
+        hboxRow1.addWidget(self.nameEntry)
+        hboxRow1.addWidget(addButton)
 
-        self.setLayout(grid)
+        hboxRow2 =QHBoxLayout()
+        hboxRow2.addWidget(durationLabel)
+        hboxRow2.addWidget(self.durationEntry)
+        hboxRow2.addWidget(computeButton)
+
+        hboxRow3 = QHBoxLayout()
+        hboxRow3.addWidget(predLabel)
+        hboxRow3.addWidget(self.predEntry)
+
+        vboxRowLast =QVBoxLayout()
+        vboxRowLast.addWidget(self.criticalPathLabel)
+        vboxRowLast.addWidget(self.timeLabel)
+
+
+        vboxEntryData = QVBoxLayout()
+        vboxEntryData.addLayout(hboxRow1)
+        vboxEntryData.addLayout(hboxRow2)
+        vboxEntryData.addLayout(hboxRow3)
+        vboxEntryData.addLayout(vboxRowLast)
+
+
+        vboxGraphInfo = QVBoxLayout()
+        vboxGraphInfo.addWidget(self.graphLabel)
+        vboxGraphInfo.addStretch(1)
+        vboxGraphInfo.addWidget(self.messageLabel)
+
+        vboxLeftSide = QVBoxLayout()
+        vboxLeftSide.addLayout(vboxEntryData)
+        vboxLeftSide.addStretch(1)
+        vboxLeftSide.addLayout(vboxGraphInfo)
+
+        hboxFinal = QHBoxLayout()
+        hboxFinal.addLayout(vboxLeftSide)
+        hboxFinal.addStretch(1)
+        hboxFinal.addWidget(self.view)
+
+        self.setLayout(hboxFinal)
         self.resize(500, 500)
         self.setWindowTitle("App")
         self.show()
@@ -102,7 +124,7 @@ class App(QWidget):
             create_graph_image(self.actions, cp)
             self.graphLabel.setPixmap(QPixmap('images/graph.png'))
             create_gantt_chart(self.actions, cp)
-            url = QtCore.QUrl.fromLocalFile(r"temp-plot.html")
+            url = QtCore.QUrl.fromLocalFile(r"/temp-plot.html")
             self.view.load(url)
            # self.ganttLabel.setPixmap(QPixmap('images/gantt.png'))
             self.timeLabel.setText("Czas trwania " + str(dr) + "h")

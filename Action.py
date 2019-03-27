@@ -81,7 +81,7 @@ def create_graph_image(actions, critic_path):
     nx.draw_networkx_nodes(G, position, node_size=700)
 
     nx.draw_networkx_edges(G, position, edgelist=cp, edge_color='r', style='dashed')
-    nx.draw_networkx_edges(G, position, edgelist=np)
+    nx.draw_networkx_edges(G, position, edgelist=np, style='solid')
     labels = nx.get_edge_attributes(G, 'weight')
     nx.draw_networkx_edge_labels(G, position, edge_labels=labels)
     nx.draw_networkx_labels(G, position, font_size=20)
@@ -112,9 +112,7 @@ def create_gantt_chart(actions, critic_path):
               'NotCritical': 'rgb(220, 0, 0)',
             }
     fig = ff.create_gantt(tasks, colors=colors, index_col='Resource', show_colorbar=True, group_tasks=True)
-   # img_bytes = pio.to_image(fig, format='png')
     plotly.offline.plot(fig, auto_open=True)
-    #py.iplot(fig, filename='gantt-group-tasks-together', world_readable=True)
-#    pio.write_image(fig, 'images/gantt.png')
+
 
 
