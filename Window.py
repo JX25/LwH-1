@@ -85,7 +85,7 @@ class App(QWidget):
             pred = []
         else:
             pred = self.predEntry.text().split(";")
-        try:
+        try: #s
             self.actions.append(Action(name, duration, pred))
             self.messageLabel.setText("Dodano czynność: "+name)
         except Exception as error:

@@ -12,7 +12,7 @@ def create_graph(actions):
             graph.add_node(action.name, size=10)
 
         pos = nx.spring_layout(graph)
-        # nodes
+        # node s
         nx.draw_networkx(graph, pos, node_size=200)
 
         # edges
