@@ -73,7 +73,7 @@ def create_graph_image(actions, critic_path):
             dr = [act.duration for act in actions if act.name == pred]
             G.add_edge(pred, action.name, weight=dr[0])
 
-    cp = [(u, v) for (u, v) in G.edges(data=False) if u in str_critic_path and v in str_critic_path]
+    cp = [(u, v) for (u, v) in G.edges(data=False) if u in str_critic_path and v in str_critic_path and G.edges.__contains__((u, v))]
     np = [(u, v) for (u, v) in G.edges(data=False) if u not in str_critic_path or v not in str_critic_path]
 
     position = nx.spring_layout(G, k=3)
@@ -82,8 +82,8 @@ def create_graph_image(actions, critic_path):
 
     nx.draw_networkx_edges(G, position, edgelist=cp, edge_color='r', style='dashed')
     nx.draw_networkx_edges(G, position, edgelist=np, style='solid')
-    labels = nx.get_edge_attributes(G, 'weight')
-    nx.draw_networkx_edge_labels(G, position, edge_labels=labels)
+    # labels = nx.get_edge_attributes(G, 'weight')
+    # nx.draw_networkx_edge_labels(G, position, edge_labels=labels)
     nx.draw_networkx_labels(G, position, font_size=20)
 
     plt.axis('off')
@@ -94,8 +94,9 @@ def create_gantt_chart(actions, critic_path):
     py.plotly.tools.set_credentials_file(username='dracco25', api_key='STCeveETjYeliL6PMwAH')
     str_critic_path = [str(node) for node in critic_path]
     now = datetime.now()
-    actions[0].start = datetime.strftime(now, "%d-%m-%Y")
-    actions[0].finish = datetime.strptime(actions[0].start, "%d-%m-%Y") + timedelta(days=actions[0].duration)
+    actions[0].start = datetime.strftime(now, "%d-%m-%Y %H:%M:%S")
+    actions[0].finish = datetime.strptime(actions[0].start, "%d-%m-%Y %H:%M:%S") + timedelta(days=actions[0].duration)
+    actions[0].start = datetime.strptime(actions[0].start, "%d-%m-%Y %H:%M:%S")
     for action in actions[1:]:
         older = actions[0].finish
         for pred in action.predecessors:
@@ -113,7 +114,7 @@ def create_gantt_chart(actions, critic_path):
               'NotCritical': 'rgb(220, 0, 0)',
             }
     fig = ff.create_gantt(tasks, colors=colors, index_col='Resource', show_colorbar=True, group_tasks=True)
-    plotly.offline.plot(fig, auto_open=True)
+    plotly.offline.plot(fig, auto_open=False)
 
 
 

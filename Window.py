@@ -2,12 +2,10 @@ from __future__ import unicode_literals
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout
-from PyQt5.QtWidgets import QLabel, QGridLayout
+from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QLineEdit, QPushButton
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-
-from PlotCanvas import PlotCanvas
 from Action import Action, create_gantt_chart
 from Action import Project
 from Action import create_graph_image
@@ -143,9 +141,12 @@ class App(QWidget):
             for node in cp[1:]:
                 string_cp += " -> " + str(node)
             self.criticalPathLabel.setText(string_cp)
+            self.actions = []
+            self.project = Project()
         else:
             self.messageLabel.setText("Brak danych!")
-
+            self.actions = []
+            self.project = Project()
 
 
 
