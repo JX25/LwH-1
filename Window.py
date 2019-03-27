@@ -23,8 +23,11 @@ class App(QWidget):
     def create_window(self):
         # labels
         nameLabel = QLabel("Nazwa akcji", self)
+        nameLabel.setFixedWidth(100)
         durationLabel = QLabel("Czas trwania akcji", self)
+        durationLabel.setFixedWidth(100)
         predLabel = QLabel("Poprzednicy [;]", self)
+        predLabel.setFixedWidth(100)
         self.criticalPathLabel = QLabel("Ścieżka krytyczna: ", self)
         self.timeLabel = QLabel("Czas trwania: ", self)
         self.messageLabel = QLabel("", self)
@@ -35,12 +38,17 @@ class App(QWidget):
         self.graphLabel.setPixmap(pixmap2)
         # entries
         self.nameEntry = QLineEdit()
+        self.nameEntry.setFixedWidth(150)
         self.durationEntry = QLineEdit()
+        self.durationEntry.setFixedWidth(150)
         self.predEntry = QLineEdit()
+        self.predEntry.setFixedWidth(150)
 
         # buttons
         addButton = QPushButton("Dodaj czynność", self)
+        addButton.setFixedWidth(100)
         computeButton = QPushButton("Oblicz", self)
+        computeButton.setFixedWidth(100)
 
         # buttons action
         addButton.clicked.connect(self.add_action)
@@ -58,15 +66,18 @@ class App(QWidget):
         hboxRow1.addWidget(nameLabel)
         hboxRow1.addWidget(self.nameEntry)
         hboxRow1.addWidget(addButton)
+        hboxRow1.addStretch(1)
 
         hboxRow2 =QHBoxLayout()
         hboxRow2.addWidget(durationLabel)
         hboxRow2.addWidget(self.durationEntry)
         hboxRow2.addWidget(computeButton)
+        hboxRow2.addStretch(1)
 
         hboxRow3 = QHBoxLayout()
         hboxRow3.addWidget(predLabel)
         hboxRow3.addWidget(self.predEntry)
+        hboxRow3.addStretch(1)
 
         vboxRowLast =QVBoxLayout()
         vboxRowLast.addWidget(self.criticalPathLabel)

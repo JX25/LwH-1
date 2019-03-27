@@ -106,7 +106,8 @@ def create_gantt_chart(actions, critic_path):
         action.finish = action.start + timedelta(days=action.duration)
 
     tasks = []
-    for action in actions[1:-1]:
+    # for action in actions[1:-1]:
+    for action in actions:
         tasks.append(dict(Task=action.name, Start=action.start, Finish=action.finish, Resource="Critical" if action.name in str_critic_path else "NotCritical"))
     colors = {'Critical': 'rgb(0, 255, 100)',
               'NotCritical': 'rgb(220, 0, 0)',
